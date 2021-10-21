@@ -1,0 +1,34 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    gap: 24px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+}
+
+.score {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+}
+.player-score, .comp-score {
+    padding: 10px;
+    border: 2px solid black;
+}

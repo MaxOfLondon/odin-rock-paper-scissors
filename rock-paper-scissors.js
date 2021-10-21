@@ -19,44 +19,13 @@ playRound = (playerSelection, computerSelection) => {
     }
 }
 
-getPlayerInput = () => {
-    let valid = false;
-    while(true) {
-        choice = capitalizeHelper(prompt('Enter what to play: Rock, Paper or Scissors: ', ''));
-        if(choice === null) {
-            return `You cancelled the game.`;
-        } else if(choice == 'Rock' || choice == 'Paper' || choice == 'Scissors') {
-            return choice;
-        } else {
-            alert(`I do not understand what '${choice}' is.`);
-        }
-    }
-}
-
-game = () => {
-    let playeWinCount = 0;
-    let computerWinCount = 0;
-
-    for(let i = 0; i < 5; i++) {
-        let playerInput = getPlayerInput();
-        if(playerInput.includes('cancelled')){
-            console.log(playerInput);
-            return;
-        }
-
-        let roundResult = playRound(playerInput, computerPlay());
-        console.log(`* Game ${i + 1}: ${roundResult}`);
-        if(roundResult.includes('Win')) {
-            playeWinCount++;
-        } else if (roundResult.includes('Lose')) {
-            computerWinCount++;
-        }
-    }
-
-    if(playeWinCount > computerWinCount) {
-        return `You won the game ${playeWinCount}:${computerWinCount}.`;
-    } else if(computerWinCount > playeWinCount) {
-        return `Computer won the game ${computerWinCount}:${playeWinCount}.`;
+evalGameScore = () => {
+    console.log('playerWinCnt.cnt', playerWinCnt.cnt);
+    if (playerWinCnt.cnt < 5 && computerWinCnt.cnt < 5) return '';
+    if(playerWinCnt.cnt > computerWinCnt.cnt) {
+        return `You won the game ${playerWinCnt.cnt}:${computerWinCnt.cnt}.`;
+    } else if(computerWinCnt.cnt > playerWinCnt.cnt) {
+        return `Computer won the game ${computerWinCnt.cnt}:${playerWinCnt.cnt}.`;
     } else {
         return `The was a tie.`;
     }
@@ -67,4 +36,51 @@ capitalizeHelper = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(-text.length +1).toLowerCase();
 }
 
-console.log(game());
+adjustRoundScore = (text) => {
+    if (text.includes('Win')) {
+        playerWinCnt.inc();
+    } else if (text.includes('Lose')) {
+        computerWinCnt.inc();
+    }
+}
+
+updateUi = (text) => {
+    const results = document.querySelector('.results');
+    const p = document.createElement('p');
+    p.appendChild(document.createTextNode(`${text}`));
+    results.prepend(p);
+
+    // update scores
+    const ps = document.querySelector('.player-score');
+    const cs = document.querySelector('.comp-score');
+    ps.innerText = playerWinCnt.cnt;
+    cs.innerText = computerWinCnt.cnt;
+}
+
+class Counter {
+    cnt = 0;
+    inc = () => { this.cnt++; console.dir(this.cnt); return this.cnt;};
+    rst = () => { this.cnt = 0; return this.cnt;}
+ };
+let playerWinCnt = new Counter();
+let computerWinCnt = new Counter();
+let round = 1;
+
+const player = document.querySelectorAll('.player');
+
+player.forEach((button) => {
+    button.addEventListener('click', (e)=>{
+        const res = playRound(e.target.innerText, computerPlay());
+        adjustRoundScore(res);
+        updateUi(`Round ${round} - ${res}`);
+        round++
+        const gameScore = evalGameScore();
+        console.log('gameScore:', gameScore)
+        if (gameScore != '') {
+            updateUi(gameScore);
+            computerWinCnt.rst();
+            playerWinCnt.rst();
+            round = 1;
+        }
+    })
+});
