@@ -20,7 +20,6 @@ playRound = (playerSelection, computerSelection) => {
 }
 
 evalGameScore = () => {
-    console.log('playerWinCnt.cnt', playerWinCnt.cnt);
     if (playerWinCnt.cnt < 5 && computerWinCnt.cnt < 5) return '';
     if(playerWinCnt.cnt > computerWinCnt.cnt) {
         return `You won the game ${playerWinCnt.cnt}:${computerWinCnt.cnt}.`;
@@ -75,7 +74,6 @@ player.forEach((button) => {
         updateUi(`Round ${round} - ${res}`);
         round++
         const gameScore = evalGameScore();
-        console.log('gameScore:', gameScore)
         if (gameScore != '') {
             updateUi(gameScore);
             computerWinCnt.rst();
